@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 50px auto;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      width: 80%;
+    }
+    .resultado {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Calculadora com FastAPI 🔢</h1>
+
+  <input type="number" id="n1" placeholder="Digite o primeiro número" />
+  <input type="number" id="n2" placeholder="Digite o segundo número" />
+
+  <div>
+    <button onclick="calcular('soma')">Somar</button>
+    <button onclick="calcular('subt')">Subtrair</button>
+    <button onclick="calcular('mult')">Multiplicar</button>
+    <button onclick="calcular('divi')">Dividir</button>
+  </div>
+
+  <div class="resultado" id="resultado">Resultado: --</div>
+
+  <script>
+    async function calcular(operacao) {
+      const n1 = parseFloat(document.getElementById('n1').value);
+      const n2 = parseFloat(document.getElementById('n2').value);
+
+      if (isNaN(n1) || isNaN(n2)) {
+        document.getElementById('resultado').innerText = "Preencha os dois números!";
+        return;
+      }
+
+      const resposta = await fetch(`http://127.0.0.1:8000/${operacao}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ n1, n2 })
+      });
+
+      const dados = await resposta.json();
+      document.getElementById('resultado').innerText =
+        `Resultado: ${dados.resultado}`;
+    }
+  </script>
+</body>
+</html>
